@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import Context from "../context";
+import axios from 'axios';
 
 function Tasks() {
   const {
@@ -8,44 +9,101 @@ function Tasks() {
     loadAdd,
     setLoadAdd,
     date,
-    status,    
+    status,  
+    setStatus  
   } = useContext(Context);
 
   const [tasksArray,setTasksArray] = useState([]);
+  const [loadArray, setLoadArray] = useState(false);
 
   const handleOnClick = () => {
     setLoadAdd(true);
   };
 
+  const handleOnChangeSelect = (event) => {
+    console.log(event.target.id)
+    console.log(event.target.key)
+    setStatus(event.target.value);
+  }
+
+  const getArray = () => {
+    axios.get('http://localhost:3001/tasks')
+      .then(res => {
+        console.log(res.data);
+        setTasksArray(res.data);
+    })
+  }
+
+  const newData = () => {
+    setLoadAdd(false);
+    setLoadArray(true);
+    axios.post('http://localhost:3001/tasks', {
+      task,
+      status,
+      created: date,
+    })
+     .then(res => {
+       console.log(res)
+     })
+    getArray()
+  }
+
   useEffect(() => {
-    //ONDE SERA FEITO O FETCH PARA ATUALIZAR A PAGINA COM O BACK
+    getArray();
+  }, []);
+
+  useEffect(() => {
     const loadPage = () => {
       if(loadAdd === true) {
-        setLoadAdd(false);
-        const array = tasksArray;
-        const newObject = { task, status, date };
-        array.push(newObject);
-        setTasksArray(array);
+       newData();
       }
     };
     loadPage();
   });
 
+  useEffect(() => {
+    if(loadArray === true) {
+      getArray();
+      setLoadArray(false);
+    } 
+  }, [tasksArray]);
+
     return(
       <section className="container" id="section-list">
-          <ol id="lista-tarefas" className="list-group list-group-numbered">
-            { tasksArray.map(({ task, date }) => { 
-              return (
-                <section key={task}>
-                  <li>
-                    <span>Tarefa: {task}</span>
-                    <span>Criada em: {date}</span>
-                    <Button>Editar</Button>
+        <main>
+          <table>
+            <thead>
+              <tr>
+              <th>Tarefas: </th>
+              <th>Criado em: </th>
+              <th>Status: </th>
+              </tr>
+            </thead>
+            <tbody>
+              { tasksArray.map(({ _id, task, created, status }, index) => { 
+                return (
+                  <tr key={_id}>
+                    <td>{task}</td>
+                    <td>{created}</td>
+                    <td>
+                      <select
+                        key={index}
+                        id={_id}
+                        value={status}
+                        onChange={handleOnChangeSelect}
+                      >
+                        <option value="pendente">pendente</option>
+                        <option value="em andamento">em andamento</option>
+                        <option value="terminado">terminado</option>
+                      </select>
+                    </td>
                     <Button>Deletar</Button>
-                  </li>
-                </section>
-             )})}
-          </ol>
+                  </tr>
+            )})}
+            </tbody>
+          </table>
+          
+          </main>
           <span>
             <Button
               type="submit"

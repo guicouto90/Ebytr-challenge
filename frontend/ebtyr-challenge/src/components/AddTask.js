@@ -11,7 +11,7 @@ function AddTasks() {
 
   const handleOnChange = ({target: { value } } ) => {
     setTask(value);
-    setDate(new Date().toISOString());
+    setDate(new Date().toLocaleDateString('pt-BR'));
   };
   
   return(
