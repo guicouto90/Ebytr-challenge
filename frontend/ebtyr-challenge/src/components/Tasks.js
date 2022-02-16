@@ -9,25 +9,15 @@ function Tasks() {
     loadAdd,
     setLoadAdd,
     date,
-    status,  
-    setStatus  
+    status,
+    setTask
   } = useContext(Context);
 
   const [tasksArray,setTasksArray] = useState([]);
   const [loadArray, setLoadArray] = useState(false);
 
-  const handleOnClick = () => {
-    setLoadAdd(true);
-  };
-
-  const handleOnChangeSelect = (event) => {
-    console.log(event.target.id)
-    console.log(event.target.key)
-    setStatus(event.target.value);
-  }
-
   const getArray = () => {
-    axios.get('http://localhost:3001/tasks')
+    axios.get('http://localhost:3001/tasks',{ teste: 'TESTE'})
       .then(res => {
         console.log(res.data);
         setTasksArray(res.data);
@@ -46,6 +36,34 @@ function Tasks() {
        console.log(res)
      })
     getArray()
+    setTask('');
+  }
+
+  const editStatus = (id, value) => {
+    axios.put(`http://localhost:3001/tasks/${id}`, { status: value}).then(res => console.log(res))
+  }
+
+  const deleteTask = (id) => {
+    axios.delete(`http://localhost:3001/tasks/${id}`).then(res => console.log(res))
+  }
+
+  const handleOnClick = () => {
+    setLoadAdd(true);
+  };
+
+  const handleOnChangeSelect = (event) => {
+    console.log(event.target.id)
+    console.log(event.target.value)
+    editStatus(event.target.id,event.target.value);
+    getArray();
+    setLoadArray(true);
+  };
+
+  const handleOnClickDelete = (event) => {
+    console.log(event.target);
+    deleteTask(event.target.id);
+    getArray();
+    setLoadArray(true);
   }
 
   useEffect(() => {
@@ -68,9 +86,48 @@ function Tasks() {
     } 
   }, [tasksArray]);
 
+  const sort = (value) => {
+    switch(value) {
+    case 'tarefas':
+      axios.get('http://localhost:3001/tasks/sortbytask')
+        .then(res => {
+          setTasksArray(res.data);
+        });
+      break;
+    case 'criado':
+      axios.get('http://localhost:3001/tasks/sortbycreated')
+        .then(res => {
+          setTasksArray(res.data);
+        });
+        break;
+    case 'status':
+      axios.get('http://localhost:3001/tasks/sortbydate')
+        .then(res => {
+          setTasksArray(res.data);
+      })
+      break;
+    }
+  };
+
+  const handleOnChangeSorted = (event) => {
+    sort(event.target.value);
+    getArray();
+    setLoadArray(true);
+  }
+
     return(
-      <section className="container" id="section-list">
-        <main>
+      <main className="container-sm">
+        <section>
+         <span>Ordenar por:</span>
+          <select
+            onClick={handleOnChangeSorted}
+          > 
+            <option value="tarefas">Tarefas</option>
+            <option value="criado">Criado em</option>
+            <option value="status">Status</option>
+          </select>
+        </section>
+        <section>
           <table>
             <thead>
               <tr>
@@ -97,20 +154,24 @@ function Tasks() {
                         <option value="terminado">terminado</option>
                       </select>
                     </td>
-                    <Button>Deletar</Button>
+                    <Button
+                      id={_id}                      
+                      onClick={ handleOnClickDelete }
+                    >
+                      Deletar
+                    </Button>
                   </tr>
             )})}
             </tbody>
           </table>
-          
-          </main>
-          <span>
+          </section>
+          <section>
             <Button
               type="submit"
               onClick={ handleOnClick } 
             >Adicionar tarefa</Button>
-          </span>
-      </section>
+          </section>
+      </main>
     )
   }
 

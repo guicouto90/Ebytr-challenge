@@ -23,11 +23,10 @@ function AddTasks() {
               id="tasks" 
               type="text"
               name="tasks"
+              value={task}
               onChange={ handleOnChange }
             />
           </label>
-          <p>{task}</p>
-
       </section>
     </div>
   )
