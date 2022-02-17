@@ -1,0 +1,53 @@
+/*import { Button } from "react-bootstrap";
+import React, { useEffect } from "react";
+
+function TasksList ({ tasksArray, handleOnClickDelete, handleOnChangeSelect, getArray }) {
+  console.log(tasksArray)
+
+  useEffect(() => {
+    getArray();
+  }, []);
+
+  return(
+    <section>
+    <table>
+      <thead>
+        <tr>
+        <th>Tarefas: </th>
+        <th>Criado em: </th>
+        <th>Status: </th>
+        </tr>
+      </thead>
+      <tbody>
+        { tasksArray.map(({ _id, task, created, status }, index) => { 
+          return (
+            <tr key={_id}>
+              <td>{task}</td>
+              <td>{created}</td>
+              <td>
+                <select
+                  key={index}
+                  id={_id}
+                  value={status}
+                  onChange={handleOnChangeSelect}
+                >
+                  <option value="pendente">pendente</option>
+                  <option value="em andamento">em andamento</option>
+                  <option value="terminado">terminado</option>
+                </select>
+              </td>
+              <Button
+                id={_id}                      
+                onClick={ handleOnClickDelete }
+              >
+                Deletar
+              </Button>
+            </tr>
+      )})}
+      </tbody>
+    </table>
+    </section>
+  )
+}
+
+export default TasksList;*/

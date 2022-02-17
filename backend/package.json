@@ -4,15 +4,31 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./tests/**/*$NAME*.{test,spec}.js --exit",
+    "coverage": "nyc npm run test",
+    "dev": "nodemon index.js",
+    "lint": "eslint --no-inline-config --no-error-on-unmatched-pattern -c .eslintrc.json ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "body-parser": "^1.19.1",
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "cors": "^2.8.5",
     "express": "^4.17.2",
+    "http": "^0.0.1-security",
+    "mocha": "^9.2.0",
     "mongodb": "^4.3.1",
-    "nodemon": "^2.0.15"
+    "mongodb-memory-server": "^6.9.6",
+    "nodemon": "^2.0.15",
+    "sinon": "^13.0.1",
+    "socket.io": "^4.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "nyc": "^15.1.0"
   }
 }
