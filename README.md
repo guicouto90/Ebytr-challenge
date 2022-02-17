@@ -13,7 +13,7 @@ Bastar clonar o repositório e instalar suas dependencias com o comando NPM INST
 - MongoDB;
 
 ### Backend:
-O backend irá se conectart na porta 3001 do localhost.
+O backend irá se conectart na porta 3001 do localhost. Para iniciar o servidor backend, rode o comando npm start.
 No backend temos as seguintes rotas com os seguintes métodos HTTP:
 - GET('/tasks'): Nessa rota é possível listar todas as tarefas cadastradas com os seu status e também com a data que foi criada;
 - POST('/tasks'): Nessa rota é para criar novas tarefas, e segue o seguinte modelo:
@@ -28,7 +28,7 @@ No backend temos as seguintes rotas com os seguintes métodos HTTP:
 - DELETE('/tasks/:id'): Nessa rota é possivel deletar uma tarefa, passando o seu id como parametro.
 
 ### Frontend:
-O frontend irá se conectart na porta 3000 do localhost.
+O frontend irá se conectart na porta 3000 do localhost. Para iniciar o aplicação frontend, rode o comando npm start.
 O frontend é bem básico, onde possui apenas um input de texto, com um botao de adicionar. Assim que uma nova tarefa é adicionada, ela vem com um select para alterar o tipo de status, e tambem um botao para deletar a tarefa. Não consegui desenvolver os testes no React.
 
 ### Proximos passos:
