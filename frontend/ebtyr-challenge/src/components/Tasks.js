@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import Context from "../context";
-import axios from 'axios';
+import getTasks from "../services/getTasks";
+import postTasks from "../services/postTasks";
+import editTask from "../services/editTasks";
+import deleteTask from "../services/deleteTasks";
 
 function Tasks() {
   const {
@@ -16,60 +19,46 @@ function Tasks() {
   const [tasksArray,setTasksArray] = useState([]);
   const [loadArray, setLoadArray] = useState(false);
 
-  const getArray = () => {
-    axios.get('http://localhost:3001/tasks',{ teste: 'TESTE'})
-      .then(res => {
-        console.log(res.data);
-        setTasksArray(res.data);
-    })
-  }
+  //Funcao para carregar os dados da API e setar o array de dados;
+  const getArray = async () => {
+    const tasks = await getTasks();
+    setTasksArray(tasks)
+  };
 
-  const newData = () => {
+  //Funcao para criar novas tarefas na API e setar o array de dados;
+  const newData = async () => {
     setLoadAdd(false);
     setLoadArray(true);
-    axios.post('http://localhost:3001/tasks', {
-      task,
-      status,
-      created: date,
-    })
-     .then(res => {
-       console.log(res)
-     })
+    await postTasks(task, status, date);
     getArray()
     setTask('');
   }
 
-  const editStatus = (id, value) => {
-    axios.put(`http://localhost:3001/tasks/${id}`, { status: value}).then(res => console.log(res))
-  }
-
-  const deleteTask = (id) => {
-    axios.delete(`http://localhost:3001/tasks/${id}`).then(res => console.log(res))
-  }
-
+  //Funcao para habilitar o useEffect de quando uma nova tarefa é adicionada na API
   const handleOnClick = () => {
     setLoadAdd(true);
   };
 
-  const handleOnChangeSelect = (event) => {
-    console.log(event.target.id)
-    console.log(event.target.value)
-    editStatus(event.target.id,event.target.value);
+  //Funcao para editar o status e recarregar o array de dados principal
+  const handleOnChangeSelect = ({target: { id, value }}) => {
+    editTask(id, value);
     getArray();
     setLoadArray(true);
   };
 
-  const handleOnClickDelete = (event) => {
-    console.log(event.target);
-    deleteTask(event.target.id);
+  //Funcao para deletar o status e recarregar o array de dados principal
+  const handleOnClickDelete = ( {target: { id } } ) => {
+    deleteTask(id);
     getArray();
     setLoadArray(true);
   }
 
+  //useEffect de quando a pagina é carregada pela primeira vez: componentDidMount
   useEffect(() => {
     getArray();
   }, []);
 
+  //useEffect de quando a pagina é atualizada com novos dados: componentDidUpdate
   useEffect(() => {
     const loadPage = () => {
       if(loadAdd === true) {
@@ -79,6 +68,7 @@ function Tasks() {
     loadPage();
   });
 
+  //useEffect de quando o array tasksArray é atualizado: componentDidUpdate
   useEffect(() => {
     if(loadArray === true) {
       getArray();
@@ -86,41 +76,18 @@ function Tasks() {
     } 
   }, [tasksArray]);
 
-  const sort = (value) => {
-    switch(value) {
-    case 'tarefas':
-      axios.get('http://localhost:3001/tasks/sortbytask')
-        .then(res => {
-          setTasksArray(res.data);
-        });
-      break;
-    case 'criado':
-      axios.get('http://localhost:3001/tasks/sortbycreated')
-        .then(res => {
-          setTasksArray(res.data);
-        });
-        break;
-    case 'status':
-      axios.get('http://localhost:3001/tasks/sortbydate')
-        .then(res => {
-          setTasksArray(res.data);
-      })
-      break;
-    }
-  };
-
-  const handleOnChangeSorted = (event) => {
+  /*const handleOnChangeSorted = (event) => {
     sort(event.target.value);
     getArray();
     setLoadArray(true);
-  }
+  }*/
 
     return(
       <main className="container-sm">
         <section>
          <span>Ordenar por:</span>
           <select
-            onClick={handleOnChangeSorted}
+            //onClick={handleOnChangeSorted}
           > 
             <option value="tarefas">Tarefas</option>
             <option value="criado">Criado em</option>
